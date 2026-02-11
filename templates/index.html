@@ -1,0 +1,134 @@
+<!-- templates/index.html -->
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Калькулятор систем счисления</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <div class="logo">⌁</div>
+      <div>
+        <div class="brand-title">BaseCalc</div>
+        <div class="brand-sub">2 / 8 / 10 / 16 системы счисления</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="nav-link active" href="/">Главная</a>
+      <a class="nav-link" href="#how">Как работает</a>
+      <a class="nav-link" href="#about">О проекте</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h1 class="h1">Переводчик систем счисления</h1>
+      <p class="muted">
+        Введи число, выбери его систему счисления и нажми <b>Посчитать</b>.
+        Я покажу значение сразу в 2, 8, 10 и 16.
+      </p>
+
+      <form class="form" method="post" action="/convert" autocomplete="off">
+        <div class="grid">
+          <label class="field">
+            <span class="label">Число</span>
+            <input
+              class="input"
+              name="value"
+              placeholder="например: 101011 или 2A или 73"
+              value="{{ value|default('') }}"
+              required
+            />
+            <span class="hint">Можно писать в верхнем/нижнем регистре (A–F).</span>
+          </label>
+
+          <label class="field">
+            <span class="label">Система (в которой введено)</span>
+            <select class="select" name="base" required>
+              {% set b = base|default(10) %}
+              <option value="2"  {% if b==2  %}selected{% endif %}>2 (binary)</option>
+              <option value="8"  {% if b==8  %}selected{% endif %}>8 (octal)</option>
+              <option value="10" {% if b==10 %}selected{% endif %}>10 (decimal)</option>
+              <option value="16" {% if b==16 %}selected{% endif %}>16 (hex)</option>
+            </select>
+            <span class="hint">Выбери систему, из которой переводим.</span>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Посчитать</button>
+          <a class="btn ghost" href="/">Сброс</a>
+        </div>
+
+        {% if error %}
+          <div class="alert error">
+            <b>Ошибка:</b> {{ error }}
+          </div>
+        {% endif %}
+      </form>
+    </section>
+
+    <section class="card results">
+      <h2 class="h2">Результат</h2>
+
+      {% if result %}
+        <div class="result-grid">
+          <div class="pill">
+            <div class="pill-top">BIN (2)</div>
+            <div class="pill-value mono">{{ result.bin }}</div>
+          </div>
+
+          <div class="pill">
+            <div class="pill-top">OCT (8)</div>
+            <div class="pill-value mono">{{ result.oct }}</div>
+          </div>
+
+          <div class="pill">
+            <div class="pill-top">DEC (10)</div>
+            <div class="pill-value mono">{{ result.dec }}</div>
+          </div>
+
+          <div class="pill">
+            <div class="pill-top">HEX (16)</div>
+            <div class="pill-value mono">{{ result.hex }}</div>
+          </div>
+        </div>
+
+        <div class="note">
+          <span class="dot"></span>
+          <span class="muted">Подсказка: HEX обычно пишут с A–F.</span>
+        </div>
+      {% else %}
+        <p class="muted">Пока пусто. Введи число и нажми “Посчитать”.</p>
+      {% endif %}
+    </section>
+
+    <section class="card" id="how">
+      <h2 class="h2">Как работает</h2>
+      <ul class="list">
+        <li>Ты вводишь число и указываешь систему (2/8/10/16).</li>
+        <li>Бэкенд переводит его в десятичное значение.</li>
+        <li>Потом конвертирует в BIN/OCT/DEC/HEX и возвращает на страницу.</li>
+      </ul>
+    </section>
+
+    <section class="card" id="about">
+      <h2 class="h2">О проекте</h2>
+      <p class="muted">
+        Простая штука для тренировки систем счисления и для практики Flask + шаблоны.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="muted">© {{ (year|default(2026)) }} BaseCalc</span>
+      <span class="muted">Тёмная тема в стиле GitHub</span>
+    </div>
+  </footer>
+</body>
+</html>
